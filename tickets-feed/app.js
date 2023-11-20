@@ -12,11 +12,7 @@ const apiRouter = require("./routes/index.router");
 const app = express();
 database.connect();
 const cors = require("cors");
-app.use(cors(
-    {
-        origin: "http://localhost:5173"
-    }
-));
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
