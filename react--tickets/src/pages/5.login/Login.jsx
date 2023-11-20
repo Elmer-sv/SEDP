@@ -1,9 +1,40 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import logo from '../../assets/img/BoletoCompleto.png'
+import React, { useState } from 'react';
+import {Link, useNavigate } from 'react-router-dom';
+import logo from '../../assets/img/BoletoCompleto.png';
+import axios from 'axios';
 
 
-export default function Login() {
+
+const Login = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    async function handleLogin(e)  {
+        e.preventDefault(); 
+        
+
+        try {
+        const response = await axios.post('http://localhost:3100/api/auth/login', {
+            identifier: username,
+            password: password,
+        }
+        );
+        
+        
+
+        if(response.status === 200){
+            console.log(response);
+            localStorage.setItem('token', response.data.token);
+            navigate("/home");
+            
+        }
+
+        } catch (error) {
+        console.error(error.response.data);
+        }
+    }
+
     return (
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%         ">
             <div className="w-full p-6 m-auto bg-white rounded-md shadow-xl lg:max-w-xl">
@@ -15,16 +46,17 @@ export default function Login() {
                 <h1 className="text-3xl font-semibold text-center text-purple-700 uppercase">
                     Sign in
                 </h1>
-                <form className="mt-6">
+                <form className="mt-6" onSubmit={handleLogin}>
                     <div className="mb-2">
                         <label
                             for="email"
                             className="block text-sm font-semibold text-gray-800"
                         >
-                            Email
+                            Username
                         </label>
                         <input
-                            type="email"
+                    
+                            type="text" placeholder="usernamer" onChange={(e) => setUsername(e.target.value)}
                             className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         />
                     </div>
@@ -36,7 +68,7 @@ export default function Login() {
                             Password
                         </label>
                         <input
-                            type="password"
+                            type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}
                             className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         />
                     </div>
@@ -47,11 +79,10 @@ export default function Login() {
                         Forget Password?
                     </a>
                     <div className="mt-6">
-                    <Link to="/home">
+                    
                         <button className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
                             Login
                         </button>
-                        </Link>
                     </div>
                 </form>
                 <div className="relative flex items-center justify-center w-full mt-6 border border-t">
@@ -59,7 +90,7 @@ export default function Login() {
                 </div>
                 <div className="flex mt-4 gap-x-2">
                     <button
-                        type="button"
+                        type="button" 
                         className="flex items-center justify-center w-full p-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-offset-1 focus:ring-violet-600"
                     >
                         <svg
@@ -87,3 +118,5 @@ export default function Login() {
         </div>
     );
 }
+
+export default Login;
